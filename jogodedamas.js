@@ -36,7 +36,7 @@ function criaTabuleiro() {
 
 function criaPeca(cor) {
     let imagem = document.createElement('img');
-    imagem.setAttribute('src', `img/${cor}.PNG`);
+    imagem.setAttribute('src', `img/${cor}.png`);
     imagem.setAttribute('width', `${tamanhoCelula-4}px`);
     imagem.setAttribute('height', `${tamanhoCelula-4}px`);
     return imagem;
@@ -65,7 +65,7 @@ tr.forEach(item => {
 
 
 
-// Selecionado todas as peças e aplicando alguns eventos a ela.
+// achado todas as peças e aplicando alguns eventos a elas.
 peca = document.querySelectorAll('img')
 peca.forEach(pe => {
 	pe.setAttribute('draggable', 'true')
@@ -138,22 +138,42 @@ celulapreta.addEventListener('drop', drop)
 
 
 function drop(){
+	mata = p_Vermelhas.indexOf(document.querySelector('.achado'))
 	p_ini = parseInt(document.querySelector('.achado').parentNode.parentNode.id)
 	p_fim = parseInt(this.parentNode.id)
 	pi_ini = parseInt(document.querySelector('.achado').name)
 	pi_fim = parseInt(this.id)
 	movimento = this
 	
-	if (positivos(p_ini, p_fim, pi_ini, pi_fim, movimento) == true) {
+	if (f_Vlimit(p_ini, p_fim, pi_ini, pi_fim, movimento) == true) {
 		this.style.backgroundColor = 'black'
 		this.append(document.querySelector('.achado'))
 		document.querySelector('.achado').setAttribute('name', this.id)
-	}
+		if(positivos(p_fim, pi_fim, pi_ini, mata) == true) {
+		if (p_Vermelhas.indexOf(document.querySelector('.achado')) !== -1){
+			if(pi_fim < pi_ini){
+				tr[p_fim +1].childNodes[pi_fim +1].childNodes[0].remove()
+			}
+			else{
+				tr[p_fim+1].childNodes[pi_fim -1].childNodes[0].remove()
+			}
+		}
+		else {
+			if(pi_fim < pi_ini){
+				tr[p_fim -1].childNodes[pi_fim +1].childNodes[0].remove()
+			}
+			else{
+				tr[p_fim -1].childNodes[pi_fim -1].childNodes[0].remove()
+			}
+		}
+	}			
+}
+	
 	else {
 		this.style.backgroundColor = 'black' 
 	}
 					
-				}
+}
 
 // Limitando os movimentos das peças
 function positivos(p_ini, p_fim, pi_ini, pi_fim, movimento){
@@ -194,10 +214,112 @@ function dragenter(t) {
 	s = parseInt(document.querySelector('.achado').name)
 	i = parseInt(this.id)
 	t = this
-	if (positivos(p,o,s,i,t) == true) {
+	if (f_Vlimit(p,o,s,i,t) == true) {
 		this.style.backgroundColor = '#00FF00'
 	}
 	else {
 		this.style.backgroundColor = '#FF0000'
 	}
+}
+
+
+
+
+function f_Vlimit(p_ini, p_fim, pi_ini, pi_fim, fim){
+	mata = p_Vermelhas.indexOf(document.querySelector('.achado'))
+	if (p_Vermelhas.indexOf(document.querySelector('.achado')) !== -1 )	{
+		if (p_ini == p_fim + 1){
+			if (pi_fim == pi_ini + 1 || pi_fim == pi_ini - 1){
+				if (fim.hasChildNodes() == false){
+					return true
+				}
+				else {
+					return false
+				}
+			}
+		}
+		else if (p_ini == p_fim +2){
+			if(pi_fim == pi_ini + 2 || pi_fim == pi_ini -2){
+					if(positivos(p_fim,pi_fim,pi_ini,mata) == true){
+						if (fim.hasChildNodes() == false){
+						return true}
+					}
+				}
+		}
+	else {
+		return false	}
+			
+		
+}
+	else{
+		if (p_ini == p_fim - 1){
+			if (pi_fim == pi_ini + 1 || pi_fim == pi_ini - 1){
+				if (fim.hasChildNodes() == false){
+					return true
+				}
+				else {
+					return false
+				}
+			}
+		}
+		else  if (p_ini == p_fim -2){
+			if(pi_fim == pi_ini + 2 || pi_fim == pi_ini -2){
+					if(positivos(p_fim,pi_fim,pi_ini,mata) == true){
+						if(fim.hasChildNodes() == false){
+						return true}
+					}
+				}
+			else{
+				return false
+			}
+	}
+	
+}}
+
+
+// Função que elimina a peça de cor diferente 
+function positivos(p_fim, pi_fim, pi_ini, mata){
+	if (mata !== -1){
+	if (pi_fim < pi_ini) {
+		if (tr[p_fim +1].childNodes[pi_fim +1].hasChildNodes() == true){
+			if (p_Vermelhas.indexOf(tr[p_fim +1].childNodes[pi_fim +1].childNodes[0]) == -1){
+			return true}
+		}
+		else {
+			return false
+		}
+	}
+	else {
+		if (tr[p_fim +1].childNodes[pi_fim -1].hasChildNodes() == true){
+			if (p_Vermelhas.indexOf(tr[p_fim +1].childNodes[pi_fim -1].childNodes[0]) == -1){
+			return true}
+		}
+		else {
+			return false
+		}
+	}
+	}
+	else {
+		if (pi_fim < pi_ini){
+		if (tr[p_fim -1].childNodes[pi_fim +1].hasChildNodes() == true){
+			if (p_Pretas.indexOf(tr[p_fim -1].childNodes[pi_fim +1].childNodes[0]) == -1){
+			return true}
+		}
+		else {
+			return false
+		}
+	}
+		else{
+			if (tr[p_fim -1].childNodes[pi_fim -1].hasChildNodes() == true){
+			if (p_Pretas.indexOf(tr[p_fim -1].childNodes[pi_fim -1].childNodes[0]) == -1){
+			return true}
+		}
+		else {
+			return false
+		}
+		}
+	
+	}
+
+
 }
